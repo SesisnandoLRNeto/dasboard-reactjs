@@ -4,12 +4,12 @@ import Content from '../content';
 import MainHeader from '../mainHeader';
 import { GridLayout } from './styles';
 
-const Layout: React.FC = () => {
+const Layout: React.FC = ({ children }) => {
   return (
     <GridLayout>
       <MainHeader />
       <Aside />
-      <Content />
+      <Content>{children}</Content>
     </GridLayout>
   );
 };
