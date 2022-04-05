@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import ContentHeader from '../../components/contentHeader';
 import HistoryFinanceCard from '../../components/historyFinanceCard';
 import SelectInput from '../../components/selectInput';
 import { Container, Content, Filters } from './styles';
 
 const List: React.FC = () => {
+  const { type } = useParams();
+
+  const { title, lineColor } = useMemo(() => {
+    return type === 'income'
+      ? { title: 'Income', lineColor: '#F7931B' }
+      : { title: 'Spent', lineColor: '#E44C4E' };
+  }, [type]);
+
   const month = [
     { value: 3, label: 'March' },
     { value: 4, label: 'April' },
@@ -21,7 +30,7 @@ const List: React.FC = () => {
 
   return (
     <Container>
-      <ContentHeader title='Spent' lineColor='#FFF'>
+      <ContentHeader title={title} lineColor={lineColor}>
         <SelectInput options={month} />
         <SelectInput options={years} />
       </ContentHeader>
@@ -36,90 +45,6 @@ const List: React.FC = () => {
       </Filters>
 
       <Content>
-        <HistoryFinanceCard
-          title='Energy bill'
-          tagColor='#e44c4e'
-          subtitle='03/30/2022'
-          amount='120.00'
-        />
-        <HistoryFinanceCard
-          title='Energy bill'
-          tagColor='#e44c4e'
-          subtitle='03/30/2022'
-          amount='120.00'
-        />
-        <HistoryFinanceCard
-          title='Energy bill'
-          tagColor='#e44c4e'
-          subtitle='03/30/2022'
-          amount='120.00'
-        />
-        <HistoryFinanceCard
-          title='Energy bill'
-          tagColor='#e44c4e'
-          subtitle='03/30/2022'
-          amount='120.00'
-        />
-        <HistoryFinanceCard
-          title='Energy bill'
-          tagColor='#e44c4e'
-          subtitle='03/30/2022'
-          amount='120.00'
-        />
-        <HistoryFinanceCard
-          title='Energy bill'
-          tagColor='#e44c4e'
-          subtitle='03/30/2022'
-          amount='120.00'
-        />
-        <HistoryFinanceCard
-          title='Energy bill'
-          tagColor='#e44c4e'
-          subtitle='03/30/2022'
-          amount='120.00'
-        />
-        <HistoryFinanceCard
-          title='Energy bill'
-          tagColor='#e44c4e'
-          subtitle='03/30/2022'
-          amount='120.00'
-        />
-        <HistoryFinanceCard
-          title='Energy bill'
-          tagColor='#e44c4e'
-          subtitle='03/30/2022'
-          amount='120.00'
-        />
-        <HistoryFinanceCard
-          title='Energy bill'
-          tagColor='#e44c4e'
-          subtitle='03/30/2022'
-          amount='120.00'
-        />
-        <HistoryFinanceCard
-          title='Energy bill'
-          tagColor='#e44c4e'
-          subtitle='03/30/2022'
-          amount='120.00'
-        />
-        <HistoryFinanceCard
-          title='Energy bill'
-          tagColor='#e44c4e'
-          subtitle='03/30/2022'
-          amount='120.00'
-        />
-        <HistoryFinanceCard
-          title='Energy bill'
-          tagColor='#e44c4e'
-          subtitle='03/30/2022'
-          amount='120.00'
-        />
-        <HistoryFinanceCard
-          title='Energy bill'
-          tagColor='#e44c4e'
-          subtitle='03/30/2022'
-          amount='120.00'
-        />
         <HistoryFinanceCard
           title='Energy bill'
           tagColor='#e44c4e'

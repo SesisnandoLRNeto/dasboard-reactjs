@@ -2,8 +2,8 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   grid-area: AS;
-  color: ${(props) => props.theme.colors.white};
-  background-color: ${(props) => props.theme.colors.secondary};
+  color: ${({ theme }) => theme.colors.white};
+  background-color: ${({ theme }) => theme.colors.secondary};
 `;
 
 export const Header = styled.header`
@@ -33,7 +33,7 @@ export const MenuItemLink = styled.a`
 
   margin: 7px;
 
-  color: ${(props) => props.theme.colors.info};
+  color: ${({ theme }) => theme.colors.info};
   text-decoration: none;
   transition: opacity 0.3s;
 
@@ -48,6 +48,6 @@ export const MenuItemLink = styled.a`
 `;
 
 export const Title = styled.h3`
-  color: ${(props) => props.theme.colors.white};
+  color: ${({ theme }) => theme.colors.white};
   margin-left: 10px;
 `;
