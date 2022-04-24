@@ -23,8 +23,12 @@ export interface IListData {
 export type GenericObject = { [key: string]: any };
 
 const List: React.FC = () => {
-  const { type } = useParams();
+  const { type: balanceType } = useParams();
   const [listData, setListData] = useState<IListData[]>([]);
+  const [selectedFrequency, setSelectedFrequency] = useState([
+    'recurrent',
+    'possible',
+  ]);
   const [monthSelected, setMonthSelected] = useState<string>(
     String(new Date().getMonth() + 1)
   );
@@ -33,10 +37,10 @@ const List: React.FC = () => {
   );
 
   const { title, lineColor, data } = useMemo(() => {
-    return type === 'income'
+    return balanceType === 'income'
       ? { title: 'Income', lineColor: '#F7931B', data: gains }
       : { title: 'Spent', lineColor: '#E44C4E', data: expensives };
-  }, [type]);
+  }, [balanceType]);
 
   const months = useMemo(() => {
     return monthEnum.map((month, index) => ({
@@ -59,17 +63,34 @@ const List: React.FC = () => {
     return uniqueYears.map((year) => ({ value: year, label: year }));
   }, [data]);
 
+  function handleSelectSpent(frenquecy: string) {
+    const alreadySelected = selectedFrequency.findIndex(
+      (item) => item === frenquecy
+    );
+
+    if (alreadySelected >= 0) {
+      const filteredFrequency = selectedFrequency.filter(
+        (item) => item !== frenquecy
+      );
+      setSelectedFrequency(filteredFrequency);
+    } else {
+      setSelectedFrequency((prev) => [...prev, frenquecy]);
+    }
+  }
+
   useEffect(() => {
-    console.log(data, monthSelected, yearSelected);
     const filteredData = data.filter((item) => {
       const dataFormatted = new Date(item.date);
       const month = String(dataFormatted.getMonth() + 1);
       const year = String(dataFormatted.getFullYear());
-      console.log(month, monthSelected, year, yearSelected);
 
-      return month === monthSelected && year === yearSelected;
+      return (
+        month === monthSelected &&
+        year === yearSelected &&
+        selectedFrequency.includes(item.frequency)
+      );
     });
-    console.log(filteredData);
+
     const response = filteredData.map((item, index) => ({
       id: String(index + Math.random() * data.length),
       description: item.description,
@@ -77,13 +98,11 @@ const List: React.FC = () => {
       frequency: item.frequency,
       dateFormatted: formatDate(item.date),
       amountFormatted: formatCurrency(Number(item.amount)),
-      tagColor: item.frequency === 'recorrent' ? '#F7931B' : '#4E41F0',
+      tagColor: item.frequency === 'recurrent' ? '#F7931B' : '#4E41F0',
     }));
 
-    console.log(response);
-
     setListData(response);
-  }, [monthSelected, yearSelected, data]);
+  }, [monthSelected, yearSelected, data, selectedFrequency]);
 
   return (
     <Container>
@@ -101,10 +120,22 @@ const List: React.FC = () => {
       </ContentHeader>
 
       <Filters>
-        <button type='button' className='tag-filter tag-recurrent'>
+        <button
+          type='button'
+          className={`tag-filter tag-recurrent ${
+            selectedFrequency.includes('recurrent') && 'tag-actived'
+          }`}
+          onClick={() => handleSelectSpent('recurrent')}
+        >
           Recurrent
         </button>
-        <button type='button' className='tag-filter tag-possible'>
+        <button
+          type='button'
+          className={`tag-filter tag-possible ${
+            selectedFrequency.includes('possible') && 'tag-actived'
+          }`}
+          onClick={() => handleSelectSpent('possible')}
+        >
           Possible
         </button>
       </Filters>
