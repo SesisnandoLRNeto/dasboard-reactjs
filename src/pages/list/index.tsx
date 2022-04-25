@@ -38,7 +38,7 @@ const List: React.FC = () => {
 
   const { title, lineColor, data } = useMemo(() => {
     return balanceType === 'income'
-      ? { title: 'Income', lineColor: '#F7931B', data: gains }
+      ? { title: 'Income', lineColor: '#4E41F0', data: gains }
       : { title: 'Spent', lineColor: '#E44C4E', data: expensives };
   }, [balanceType]);
 

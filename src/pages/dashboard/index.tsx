@@ -1,19 +1,172 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import ContentHeader from '../../components/contentHeader';
+import MessageBox from '../../components/messageBox';
 import SelectInput from '../../components/selectInput';
-import { Container } from './styles';
+import WalletBox from '../../components/walletBox';
+import expensives from '../../repositories/expensives';
+import gains from '../../repositories/gains';
+import monthEnum from '../../utils/months';
+
+import happy from '../../assets/happy.svg';
+import sad from '../../assets/sad.svg';
+import grinning from '../../assets/grinning.svg';
+
+import { Container, Content } from './styles';
+import PieChartComponent from '../../components/pieChart';
 
 const Dashboard: React.FC = () => {
-  const options = [
-    { value: 'Nando', label: 'Nando' },
-    { value: 'Sesis', label: 'Sesis' },
-  ];
+  const [monthSelected, setMonthSelected] = useState<string>(
+    String(new Date().getMonth() + 1)
+  );
+  const [yearSelected, setYearSelected] = useState<string>(
+    String(new Date().getFullYear())
+  );
+
+  const months = useMemo(() => {
+    return monthEnum.map((month, index) => ({
+      value: index + 1,
+      label: month,
+    }));
+  }, []);
+
+  const years = useMemo(() => {
+    let uniqueYears: number[] = [];
+
+    [...expensives, ...gains].forEach((item) => {
+      const date = new Date(item.date);
+      const year = date.getFullYear();
+      if (!uniqueYears.includes(year)) {
+        uniqueYears.push(year);
+      }
+    });
+    return uniqueYears.map((year) => ({ value: year, label: year }));
+  }, []);
+
+  const totalExpenses = useMemo(() => {
+    return expensives.reduce((total, item) => {
+      const date = new Date(item.date);
+      const year = String(date.getFullYear());
+      const month = String(date.getMonth() + 1);
+
+      if (month === monthSelected && year === yearSelected) {
+        total += Number(item.amount);
+      }
+      return total;
+    }, 0);
+  }, [monthSelected, yearSelected]);
+
+  const totalGains = useMemo(() => {
+    return gains.reduce((total, item) => {
+      const date = new Date(item.date);
+      const year = String(date.getFullYear());
+      const month = String(date.getMonth() + 1);
+
+      if (month === monthSelected && year === yearSelected) {
+        total += Number(item.amount);
+      }
+      return total;
+    }, 0);
+  }, [monthSelected, yearSelected]);
+
+  const totalBalance = useMemo(() => {
+    return totalGains - totalExpenses;
+  }, [totalGains, totalExpenses]);
+
+  const message = useMemo(() => {
+    if (totalBalance < 0) {
+      return {
+        title: 'Its wrong',
+        description: 'On this month you expensive more than your gains',
+        footerText: 'Check your expensives and try cut costs unecessary',
+        icon: sad,
+      };
+    } else if (totalBalance === 0) {
+      return {
+        title: 'WOW!',
+        description: 'On this month you expensive exactly your gains value',
+        footerText: 'Warning and try save some cash to the next one',
+        icon: grinning,
+      };
+    } else {
+      return {
+        title: 'Nice job!',
+        description: 'On this month you still with balance positive',
+        footerText: 'You could think about investiments',
+        icon: happy,
+      };
+    }
+  }, [totalBalance]);
+
+  const relationExpensesVersusGains = useMemo(() => {
+    const total = totalExpenses + totalGains;
+    const gainsPercent = totalGains ? (totalGains / total) * 100 : 0;
+    const expensivesPercent = totalExpenses ? (totalExpenses / total) * 100 : 0;
+
+    const data = [
+      {
+        name: 'gain',
+        value: totalGains,
+        percent: gainsPercent.toFixed(1),
+        color: '#4E41F0',
+      },
+      {
+        name: 'expenses',
+        value: totalExpenses,
+        percent: expensivesPercent.toFixed(1),
+        color: '#F7931B',
+      },
+    ];
+
+    console.log(data);
+    return data;
+  }, [totalExpenses, totalGains]);
 
   return (
     <Container>
       <ContentHeader title='Dashboard' lineColor='#F7931B'>
-        <SelectInput options={options} onChange={() => {}} />
+        <SelectInput
+          options={months}
+          defaultValue={monthSelected}
+          onChange={(e) => setMonthSelected(e.target.value)}
+        />
+        <SelectInput
+          options={years}
+          defaultValue={yearSelected}
+          onChange={(e) => setYearSelected(e.target.value)}
+        />
       </ContentHeader>
+
+      <Content>
+        <WalletBox
+          title='Balance'
+          icon='dolar'
+          amount={totalBalance}
+          color='#4E41F0'
+          footerLabel='It is the amount based in inflow and outflow values'
+        />
+        <WalletBox
+          title='Inflows'
+          icon='arrowUp'
+          amount={totalGains}
+          color='#F7931B'
+          footerLabel='It is the amount based in inflow values'
+        />
+        <WalletBox
+          title='Outflows'
+          icon='arrowDown'
+          amount={totalExpenses}
+          color='#E44C4E'
+          footerLabel='It is the amount based in outflow values'
+        />
+        <MessageBox
+          title={message?.title}
+          description={message?.description}
+          footerText={message?.footerText}
+          icon={message?.icon}
+        ></MessageBox>
+
+        <PieChartComponent data={relationExpensesVersusGains} />
+      </Content>
     </Container>
   );
 };
