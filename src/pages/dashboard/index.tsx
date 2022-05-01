@@ -13,6 +13,7 @@ import grinning from '../../assets/grinning.svg';
 
 import { Container, Content } from './styles';
 import PieChartComponent from '../../components/pieChart';
+import HistoryBox from '../../components/historyBox';
 
 const Dashboard: React.FC = () => {
   const [monthSelected, setMonthSelected] = useState<string>(
@@ -117,9 +118,51 @@ const Dashboard: React.FC = () => {
       },
     ];
 
-    console.log(data);
     return data;
   }, [totalExpenses, totalGains]);
+
+  const dataToHistoryChart = useMemo(() => {
+    return monthEnum
+      .map((_, month) => {
+        let amountInflow = 0;
+        gains.forEach((gain) => {
+          const date = new Date(gain.date);
+          const gainMonth = date.getMonth();
+          const gainYear = String(date.getFullYear());
+
+          if (gainMonth === month && gainYear === yearSelected) {
+            try {
+              amountInflow += Number(gain.amount);
+            } catch {
+              throw new Error('amountInflow is invalid');
+            }
+          }
+        });
+
+        let amountOutflow = 0;
+        expensives.forEach((expensive) => {
+          const date = new Date(expensive.date);
+          const expensiveMonth = date.getMonth();
+          const expensiveYear = String(date.getFullYear());
+
+          if (expensiveMonth === month && expensiveYear === yearSelected) {
+            try {
+              amountOutflow += Number(expensive.amount);
+            } catch {
+              throw new Error('amountOutflow is invalid');
+            }
+          }
+        });
+
+        return {
+          monthNumber: month,
+          month: monthEnum[month].substring(0, 3),
+          amountInflow,
+          amountOutflow,
+        };
+      })
+      .filter((item) => item.amountInflow > 0 && item.amountOutflow > 0);
+  }, [yearSelected]);
 
   return (
     <Container>
@@ -166,6 +209,11 @@ const Dashboard: React.FC = () => {
         ></MessageBox>
 
         <PieChartComponent data={relationExpensesVersusGains} />
+        <HistoryBox
+          lineColorAmountInflow='#F7931B'
+          lineColorAmountOutflow='#E44C4E'
+          data={dataToHistoryChart}
+        />
       </Content>
     </Container>
   );
