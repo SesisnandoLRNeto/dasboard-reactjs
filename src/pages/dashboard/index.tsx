@@ -14,6 +14,7 @@ import grinning from '../../assets/grinning.svg';
 import { Container, Content } from './styles';
 import PieChartComponent from '../../components/pieChart';
 import HistoryBox from '../../components/historyBox';
+import BarChartComponent from '../../components/barChart';
 
 const Dashboard: React.FC = () => {
   const [monthSelected, setMonthSelected] = useState<string>(
@@ -161,8 +162,86 @@ const Dashboard: React.FC = () => {
           amountOutflow,
         };
       })
-      .filter((item) => item.amountInflow > 0 && item.amountOutflow > 0);
+      .filter((item) => item.amountInflow > 0 || item.amountOutflow > 0);
   }, [yearSelected]);
+
+  const relationExpensivesGains = useMemo(() => {
+    let amountRecurrent = 0;
+    let amountPossible = 0;
+
+    expensives
+      .filter((expensive) => {
+        const date = new Date(expensive.date);
+        const year = String(date.getFullYear());
+        const month = String(date.getMonth() + 1);
+
+        return month === monthSelected && year === yearSelected;
+      })
+      .forEach((expensive) => {
+        if (expensive.frequency === 'recurrent') {
+          return (amountRecurrent += Number(expensive.amount));
+        }
+        if (expensive.frequency === 'possible') {
+          return (amountPossible += Number(expensive.amount));
+        }
+      });
+
+    const total = amountRecurrent + amountPossible;
+
+    return [
+      {
+        name: 'Recurrent',
+        amount: amountRecurrent,
+        percent: Number(((amountRecurrent / total) * 100).toFixed(1)),
+        color: `#F7921B`,
+      },
+      {
+        name: 'Possible',
+        amount: amountPossible,
+        percent: Number(((amountPossible / total) * 100).toFixed(1)),
+        color: `#4E41F0`,
+      },
+    ].filter((value) => !isNaN(value.percent));
+  }, [yearSelected, monthSelected]);
+
+  const relationGainsExpensives = useMemo(() => {
+    let amountRecurrent = 0;
+    let amountPossible = 0;
+
+    gains
+      .filter((gain) => {
+        const date = new Date(gain.date);
+        const year = String(date.getFullYear());
+        const month = String(date.getMonth() + 1);
+
+        return month === monthSelected && year === yearSelected;
+      })
+      .forEach((gain) => {
+        if (gain.frequency === 'recurrent') {
+          return (amountRecurrent += Number(gain.amount));
+        }
+        if (gain.frequency === 'possible') {
+          return (amountPossible += Number(gain.amount));
+        }
+      });
+
+    const total = amountRecurrent + amountPossible;
+
+    return [
+      {
+        name: 'Recurrent',
+        amount: amountRecurrent,
+        percent: Number(((amountRecurrent / total) * 100).toFixed(1)),
+        color: `#F7921B`,
+      },
+      {
+        name: 'Possible',
+        amount: amountPossible,
+        percent: Number(((amountPossible / total) * 100).toFixed(1)),
+        color: `#4E41F0`,
+      },
+    ].filter((value) => !isNaN(value.percent));
+  }, [yearSelected, monthSelected]);
 
   return (
     <Container>
@@ -214,6 +293,9 @@ const Dashboard: React.FC = () => {
           lineColorAmountOutflow='#E44C4E'
           data={dataToHistoryChart}
         />
+
+        <BarChartComponent title='Outflow' data={relationExpensivesGains} />
+        <BarChartComponent title='Inflow' data={relationGainsExpensives} />
       </Content>
     </Container>
   );
