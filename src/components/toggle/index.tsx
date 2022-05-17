@@ -1,16 +1,28 @@
 import React from 'react';
 import { Container, ToggleLable, ToggleSelector } from './styles';
 
-const Toggle: React.FC = () => (
+interface IToggleProps {
+  labelLeft: string;
+  labelRight: string;
+  checked: boolean;
+  onChange(): void;
+}
+
+const Toggle: React.FC<IToggleProps> = ({
+  labelLeft,
+  labelRight,
+  checked,
+  onChange,
+}) => (
   <Container>
-    <ToggleLable>Light</ToggleLable>
+    <ToggleLable>{labelLeft}</ToggleLable>
     <ToggleSelector
-      checked
+      checked={checked}
       uncheckedIcon={false}
       checkedIcon={false}
-      onChange={() => console.log('changed')}
+      onChange={onChange}
     />
-    <ToggleLable>Dark</ToggleLable>
+    <ToggleLable>{labelRight}</ToggleLable>
   </Container>
 );
 

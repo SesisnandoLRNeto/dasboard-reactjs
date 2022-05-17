@@ -192,16 +192,16 @@ const Dashboard: React.FC = () => {
       {
         name: 'Recurrent',
         amount: amountRecurrent,
-        percent: Number(((amountRecurrent / total) * 100).toFixed(1)),
+        percent: Number(((amountRecurrent / total) * 100).toFixed(1)) || 0,
         color: `#F7921B`,
       },
       {
         name: 'Possible',
         amount: amountPossible,
-        percent: Number(((amountPossible / total) * 100).toFixed(1)),
+        percent: Number(((amountPossible / total) * 100).toFixed(1)) || 0,
         color: `#4E41F0`,
       },
-    ].filter((value) => !isNaN(value.percent));
+    ];
   }, [yearSelected, monthSelected]);
 
   const relationGainsExpensives = useMemo(() => {
@@ -231,16 +231,16 @@ const Dashboard: React.FC = () => {
       {
         name: 'Recurrent',
         amount: amountRecurrent,
-        percent: Number(((amountRecurrent / total) * 100).toFixed(1)),
+        percent: Number(((amountRecurrent / total) * 100).toFixed(1)) || 0,
         color: `#F7921B`,
       },
       {
         name: 'Possible',
         amount: amountPossible,
-        percent: Number(((amountPossible / total) * 100).toFixed(1)),
+        percent: Number(((amountPossible / total) * 100).toFixed(1)) || 0,
         color: `#4E41F0`,
       },
-    ].filter((value) => !isNaN(value.percent));
+    ];
   }, [yearSelected, monthSelected]);
 
   return (
