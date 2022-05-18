@@ -47,6 +47,30 @@ export const MenuItemLink = styled.a`
   }
 `;
 
+export const MenuItemButton = styled.button`
+  display: flex;
+  align-items: center;
+
+  font-size: 16px;
+
+  margin: 7px;
+
+  border: none;
+  background-color: transparent;
+
+  color: ${({ theme }) => theme.colors.info};
+  transition: opacity 0.3s;
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  > svg {
+    font-size: 18px;
+    margin-right: 5px;
+  }
+`;
+
 export const Title = styled.h3`
   color: ${({ theme }) => theme.colors.white};
   margin-left: 10px;
