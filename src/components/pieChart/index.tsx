@@ -20,6 +20,7 @@ interface IPieChartProps {
 const PieChartComponent: React.FC<IPieChartProps> = ({ data }) => (
   <Container>
     <SideLeft>
+      <h2>Relation</h2>
       <LegendContainer>
         {data.map((item) => (
           <Legend key={item.name} color={item.color}>

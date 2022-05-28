@@ -7,8 +7,6 @@ import AuthRoute from './auth.routes';
 const Routes: React.FC = () => {
   const { logged } = useAuth();
 
-  console.log(logged);
-
   return (
     <BrowserRouter>{logged ? <AppRoutes /> : <AuthRoute />}</BrowserRouter>
   );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Container,
   Header,
@@ -7,6 +7,8 @@ import {
   MenuItemButton,
   MenuItemLink,
   Title,
+  ToggleMenu,
+  ThemeToggleFooter,
 } from './styles';
 
 import {
@@ -14,18 +16,39 @@ import {
   MdArrowDownward,
   MdArrowUpward,
   MdExitToApp,
+  MdClose,
+  MdMenu,
 } from 'react-icons/md';
 
 import { useAuth } from '../../hooks/auth';
-
+import { useTheme } from '../../hooks/theme';
 import logImg from '../../assets/logo.svg';
+import Toggle from '../toggle';
 
 const Aside: React.FC = () => {
   const { logOut } = useAuth();
+  const { theme, toggleTheme } = useTheme();
+
+  const [toggleMenuIsOpened, setToggleMenuIsOpened] = useState(false);
+  const [darkTheme, setDarkTheme] = useState(() =>
+    theme?.title === 'dark' ? true : false
+  );
+
+  const handleToggleMenu = () => {
+    setToggleMenuIsOpened(!toggleMenuIsOpened);
+  };
+
+  const handleChangeTheme = () => {
+    setDarkTheme(!darkTheme);
+    toggleTheme();
+  };
 
   return (
-    <Container>
+    <Container menuIsOpened={toggleMenuIsOpened}>
       <Header>
+        <ToggleMenu onClick={handleToggleMenu}>
+          {toggleMenuIsOpened ? <MdClose /> : <MdMenu />}
+        </ToggleMenu>
         <LogImg src={logImg} alt='My wallet logo' />
         <Title>My wallet</Title>
       </Header>
@@ -48,6 +71,15 @@ const Aside: React.FC = () => {
           Logout
         </MenuItemButton>
       </MenuContainer>
+
+      <ThemeToggleFooter menuIsOpened={toggleMenuIsOpened}>
+        <Toggle
+          labelLeft='Light'
+          labelRight='Dark'
+          checked={darkTheme}
+          onChange={handleChangeTheme}
+        />
+      </ThemeToggleFooter>
     </Container>
   );
 };

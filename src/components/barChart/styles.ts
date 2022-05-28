@@ -16,6 +16,14 @@ export const Container = styled.div`
   color: ${({ theme }) => theme.colors.white};
 
   border-radius: 7px;
+
+  @media (max-width: 1200px) {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    height: auto;
+  }
 `;
 export const SideLeft = styled.aside`
   flex: 1;
@@ -32,6 +40,39 @@ export const SideRight = styled.main`
   width: 60%;
   min-height: 150px;
   padding-top: 35px;
+
+  @media (max-width: 1200px) {
+    width: 100%;
+  }
+`;
+
+export const LegendContainer = styled.ul`
+  list-style: none;
+
+  height: 175px;
+  padding-right: 15px;
+  overflow-y: scroll;
+
+  /* scrollbar width */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  /* scrollbar inside */
+  ::-webkit-scrollbar-thumb {
+    background-color: ${({ theme }) => theme.colors.secondary};
+    border-radius: 10px;
+  }
+
+  /* scrollbar outside */
+  ::-webkit-scrollbar-track {
+    background-color: ${({ theme }) => theme.colors.tertiary};
+  }
+
+  @media (max-width: 1200px) {
+    display: flex;
+    height: auto;
+  }
 `;
 
 export const Legend = styled.li<ILegendProps>`
@@ -57,27 +98,15 @@ export const Legend = styled.li<ILegendProps>`
   > span {
     margin-left: 5px;
   }
-`;
-export const LegendContainer = styled.ul`
-  list-style: none;
 
-  height: 175px;
-  padding-right: 15px;
-  overflow-y: scroll;
+  @media (max-width: 1200px) {
+    > div {
+      width: 30px;
+      height: 30px;
+      border-radius: 5px;
 
-  /* scrollbar width */
-  ::-webkit-scrollbar {
-    width: 10px;
-  }
-
-  /* scrollbar inside */
-  ::-webkit-scrollbar-thumb {
-    background-color: ${({ theme }) => theme.colors.secondary};
-    border-radius: 10px;
-  }
-
-  /* scrollbar outside */
-  ::-webkit-scrollbar-track {
-    background-color: ${({ theme }) => theme.colors.tertiary};
+      font-size: 12px;
+      line-height: 30px;
+    }
   }
 `;

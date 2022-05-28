@@ -288,6 +288,7 @@ const Dashboard: React.FC = () => {
         ></MessageBox>
 
         <PieChartComponent data={relationExpensesVersusGains} />
+
         <HistoryBox
           lineColorAmountInflow='#F7931B'
           lineColorAmountOutflow='#E44C4E'
